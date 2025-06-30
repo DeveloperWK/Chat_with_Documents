@@ -20,15 +20,33 @@ def main():
         print("✨ Clearing Database")
         clear_DB()
     doc = load_Doc()
-    chunk = split_doc(doc)
-    add_to_DB(chunk)
+    chunks = split_doc(doc)
+        # ✅ Safe debug print — won't crash if folder is missing
+    if chunks:
+        print("✅ First chunk preview:")
+        print("Content:", chunks[0].page_content[:200])
+        print("Metadata:", chunks[0].metadata)
+    add_to_DB(chunks)
 
 
 def load_Doc():
+    if not os.path.exists(DATA_PATH):
+        print(f"❌ Folder '{DATA_PATH}/' not found. Please create it and add PDF files.")
+        exit(1)
+    if not os.listdir(DATA_PATH):
+        print(f"⚠️ Folder '{DATA_PATH}/' is empty. Add some PDF files to load documents.")
+        exit(1)
+
     doc_loader = PyPDFDirectoryLoader(DATA_PATH)
+    documents = doc_loader.load()
+    if not documents:
+        print("⚠️ No valid PDF documents found in the folder.")
+        exit(1)
+
+    print(f"📄 Loaded {len(documents)} documents from '{DATA_PATH}/'")
     return doc_loader.load()
 
-documents = load_Doc()
+
 
 def split_doc(doc:list[Document]):
     text_splitter = RecursiveCharacterTextSplitter(
@@ -39,8 +57,8 @@ def split_doc(doc:list[Document]):
 
     )
     return text_splitter.split_documents(doc)
-text_chunk = split_doc(documents)
-print("chunk",text_chunk[0])
+
+
 def add_to_DB(chunks:list[Document]):
     db = Chroma(
         persist_directory=CHROMA_PATH,
@@ -84,19 +102,14 @@ def calculate_chunk_ids(chunks):
     return chunks
 
 def clear_DB():
+
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
 
 
+
 if __name__=="__main__":
     main()
-
-    # Debug: Inspect a loaded and chunked document
-    # documents = load_Doc()
-    # chunks = split_doc(documents)
-    # print("🧪 First Chunk Preview:")
-    # print("Content:", chunks[0].page_content[:300])
-    # print("Metadata:", chunks[0].metadata)
 
 
 

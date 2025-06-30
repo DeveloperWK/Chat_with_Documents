@@ -4,3 +4,4 @@ chromadb
 langchain_community
 langchain-ollama
 langchain-chroma
+rich
