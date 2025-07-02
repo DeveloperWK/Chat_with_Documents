@@ -10,3 +10,8 @@ wheels/
 .venv
 chroma
 data
+
+# Notebook
+*.ipynb
+
+config.json
