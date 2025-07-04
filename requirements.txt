@@ -5,3 +5,6 @@ langchain_community
 langchain-ollama
 langchain-chroma
 rich
+python-docx
+Pillow
+pytesseract
