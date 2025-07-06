@@ -1,4 +1,3 @@
-import os
 import sys
 import requests
 import time
@@ -9,7 +8,6 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.live import Live 
 from rich.spinner import Spinner
-
 
 console = Console()
 
@@ -47,8 +45,7 @@ def select_from_list(prompt_message:str,options:list,default_index:int=0)->str:
         sys.exit(1)
     console.print(f"\n[bold]{prompt_message}[/bold]")
     for i,option in enumerate(options):
-        console.print(f"  [cyan]{i + 1}.[/cyan] {option}")
-
+        console.print(f"[cyan]{i + 1}.[/cyan] {option}")
     while True:
         try:
             choice_str=Prompt.ask(
@@ -77,7 +74,7 @@ def get_user_input(prompt_message:str,default_value:str = "")->str:
              sys.exit(0)
 
 
-def confirm_input(message:str,default:bool=True)->bool:
+def confirm_action(message:str,default:bool=True)->bool:
     try:
         return Confirm.ask(message,default=default)
     except(KeyboardInterrupt,EOFError):
@@ -93,6 +90,7 @@ def show_spinner(text:str,duration:int=0):
         print_info(f"⏳{text}...")
 
 
+
 def check_ollama_server_running(base_url:str="http://localhost:11434")->bool:
     try:
         response = requests.get(f"{base_url}/api/tags",timeout=5)
@@ -101,7 +99,7 @@ def check_ollama_server_running(base_url:str="http://localhost:11434")->bool:
     except requests.exceptions.ConnectionError:
         print_error(f"Could not connect to Ollama server at {base_url}. Please ensure Ollama is running.")
         return False
-    except requests.exceptions.ConnectTimeout: #type:ignore
+    except requests.exceptions.ConnectTimeout: 
         print_error(f"Timed out connecting to Ollama server at {base_url}. It might be slow to respond.")
         return False
     except requests.exceptions.RequestException as e:
@@ -111,9 +109,6 @@ def check_ollama_server_running(base_url:str="http://localhost:11434")->bool:
 
 
     
-
-
-
 
 
 

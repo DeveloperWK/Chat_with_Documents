@@ -8,3 +8,7 @@ rich
 python-docx
 Pillow
 pytesseract
+docx2txt
+langchain-google-genai
+langchain-openai
+python-dotenv
