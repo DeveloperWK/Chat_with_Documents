@@ -1,22 +1,35 @@
 [project]
-name = "chat-with-pdf"
+name = "chat-with-documents" # Renamed to "chat-with-documents" as requested
 version = "0.1.0"
-description = "Add your description here"
+description = "A CLI tool to chat with your documents (PDFs, DOCX, Images) using various AI models."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10" # Updated to reflect common Python 3.10+ usage
 dependencies = [
-    "chromadb>=1.0.15",
-    "docx2txt>=0.9",
-    "langchain>=0.3.26",
+    "chromadb>=1.0.12",
+    "langchain>=0.3.25",
     "langchain-chroma>=0.2.4",
-    "langchain-community>=0.3.27",
-    "langchain-google-genai>=2.1.6",
+    "langchain-community>=0.3.25",
     "langchain-ollama>=0.3.3",
-    "langchain-openai>=0.3.27",
-    "pillow>=11.3.0",
-    "pypdf>=5.7.0",
-    "pytesseract>=0.3.13",
-    "python-docx>=1.2.0",
-    "python-dotenv>=1.1.1",
+    "langchain-google-genai>=0.1.0", # Added for Gemini
+    "langchain-openai>=0.1.0",       # Added for OpenAI
+    "pypdf>=5.6.0",
     "rich>=14.0.0",
+    "python-docx>=1.1.0",            # Added for DOCX support
+    "Pillow>=10.0.0",                # Added for Image processing
+    "pytesseract>=0.3.10",           # Added for Image OCR
+    "requests>=2.30.0",              # Added for Ollama API calls
 ]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+# This tells setuptools to find packages in the 'chat_with_docs' directory
+find = {where = ["chat_with_docs"]}
+
+[project.scripts]
+# Define your main entry point for the CLI tool
+# The format is "command_name = package_name.module_name:function_name"
+chat-with-docs = "chat_with_docs.main:main"
+
