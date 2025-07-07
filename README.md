@@ -61,7 +61,7 @@ Follow these steps to set up the Python environment for the tool.
 
    ```
    git clone <your-repository-url>
-   cd Chat_With_Pdf # Or whatever your project folder is named
+   cd Chat_with_Documents # Or whatever your project folder is named
    ```
 
 2. **Check Python Version**
@@ -73,24 +73,24 @@ Follow these steps to set up the Python environment for the tool.
 3. **Create a Virtual Environment (Recommended):** A virtual environment isolates your project's dependencies.
 
    ```
-   python -m venv venv
+   python -m venv .venv
    OR
-   python3 -m venv venv
+   python3 -m venv .venv
    ```
 
 4. **Activate the Virtual Environment:**
 
    - **Linux/macOS:**
      ```
-     source venv/bin/activate
+     source .venv/bin/activate
      ```
    - **Windows (Command Prompt):**
      ```
-     .\venv\Scripts\activate.bat
+     .\.venv\Scripts\activate.bat
      ```
    - **Windows (PowerShell):**
      ```
-     .\venv\Scripts\Activate.ps1
+     .\.venv\Scripts\Activate.ps1
      ```
 
    (Your terminal prompt should now show `(venv)` indicating the environment is active.)
