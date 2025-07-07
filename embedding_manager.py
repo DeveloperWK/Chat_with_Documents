@@ -157,7 +157,6 @@ def get_embedding_function(config:dict)-> Any:
          final_model_name=model_name
          if not final_model_name.startswith("models/"):
              final_model_name=f"models/{model_name}"
-         cli_utils.print_info(f"DEBUG: Using Gemini embedding model: '{final_model_name}'")
          return GoogleGenerativeAIEmbeddings(model=final_model_name,google_api_key=SecretStr(api_key))
     elif service =="openai":
          model_name=config.get("openai_embedding_model")
