@@ -1,3 +1,9 @@
+# CWDoc — Chat With Documents 🚀
+
+![License](https://img.shields.io/badge/license-NonCommercial--NoDerivatives-red)
+![Made by](https://img.shields.io/badge/Made%20by-MD%20Wasiful%20Kabir-brightgreen)
+![Status](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F%20by%20Wasiful-blueviolet)
+
 # Chat with Documents: Installation & Usage Guide
 
 This guide provides step-by-step instructions to set up and use the "Chat with Documents" CLI tool on various operating systems.
@@ -225,3 +231,15 @@ Open a new terminal to confirm the changes are active.
 - **"No chunks generated"**: This might happen if your documents are empty or contain only images that Tesseract cannot process.
 
 If you encounter any other issues, please provide the full error message and your operating system details.
+
+## License
+
+[![License](https://img.shields.io/badge/license-NonCommercial--NoDerivatives-red)](./LICENSE)
+
+This project is licensed under a **custom NonCommercial + No Derivatives license**.  
+Usage is allowed for personal and non-commercial purposes **only**.  
+For commercial use or modification, please contact:
+
+**MD Wasiful Kabir**  
+📧 wasifulkabir2023@gmail.com  
+🔗 ONE STEP AHEAD OF EVERYONE 🚀
