@@ -24,19 +24,19 @@ def print_intro(title: str, instructions: str):
 
 
 def print_info(message: str):
-    console.print(f"[blue]ℹ️ {message}[/blue]")
+    console.print(f"[blue]ℹ️  {message}[/blue]")
 
 
 def print_warning(message: str):
-    console.print(f"[yellow]⚠️ {message}[/yellow]")
+    console.print(f"[yellow]⚠️  {message}[/yellow]")
 
 
 def print_error(message: str):
-    console.print(f"[bold red]❌ {message}[/bold red]")
+    console.print(f"[bold red]❌  {message}[/bold red]")
 
 
 def print_success(message: str):
-    console.print(f"[bold green]✅ {message}[/bold green]")
+    console.print(f"[bold green]✅  {message}[/bold green]")
 
 # ---------------------- PROMPT FUNCTIONS ----------------------
 

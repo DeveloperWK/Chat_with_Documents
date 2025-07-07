@@ -2,24 +2,29 @@
 import argparse
 import sys
 
-import cli_utils
-import config_manager
-import llm_manager
-import embedding_manager
-import vector_store_manager
+from chat_with_docs import cli_utils
+from chat_with_docs import config_manager
+from chat_with_docs import llm_manager
+from chat_with_docs import embedding_manager
+from chat_with_docs import vector_store_manager
 
-import populate_db
-import query_data
+from chat_with_docs import populate_db
+from chat_with_docs import query_data
 
-def setup_wizard(config:dict)->dict:
-    cli_utils.print_info("🚀 Starting setup wizard for Chat with Documents!")
+def setup_wizard(config: dict) -> dict:
+    cli_utils.print_info("[bold cyan]🚀 Chat With Documents - AI-Powered Document Conversations[/bold cyan]")
+    cli_utils.print_info("[bold green]👨‍💻 Made with ❤️  by MD Wasiful Kabir[/bold green]")
+    cli_utils.print_info("[bold yellow]🔗 ONE STEP AHEAD OF EVERYONE[/bold yellow]\n")
+
     cli_utils.print_info("Let's configure your AI service, models, and data storage.")
-    cli_utils.print_info("\n--- AI Service Selection ---")
+
+    cli_utils.print_info("\n--- [bold]AI Service Selection[/bold] ---")
     selected_service = llm_manager.select_ai_service(config)
     config["preferred_ai_service"] = selected_service
     config_manager.save_config(config)
     cli_utils.print_success(f"Selected AI Service: [bold green]{selected_service.upper()}[/bold green]")
-    cli_utils.print_info("\n--- Chat Model Selection ---")
+
+    cli_utils.print_info("\n--- [bold]Chat Model Selection[/bold] ---")
     try:
         llm_manager.select_chat_model(config)
         config_manager.save_config(config)
@@ -27,8 +32,9 @@ def setup_wizard(config:dict)->dict:
     except Exception as e:
         cli_utils.print_error(f"Failed to set up chat model: {e}")
         cli_utils.print_info("Please resolve the issue and run setup again.")
-        sys.exit(1) # Exit if chat model setup fails
-    cli_utils.print_info("\n--- Embedding Model Selection ---")
+        sys.exit(1)
+
+    cli_utils.print_info("\n--- [bold]Embedding Model Selection[/bold] ---")
     try:
         embedding_manager.select_embedding_model(config)
         config_manager.save_config(config)
@@ -36,13 +42,18 @@ def setup_wizard(config:dict)->dict:
     except Exception as e:
         cli_utils.print_error(f"Failed to set up embedding model: {e}")
         cli_utils.print_info("Please resolve the issue and run setup again.")
-        sys.exit(1) # Exit if embedding model setup fails
-    cli_utils.print_info("\n--- Vector Store Location ---")
+        sys.exit(1)
+
+    cli_utils.print_info("\n--- [bold]Vector Store Location[/bold] ---")
     vector_store_manager.set_vector_store_path(config)
     config_manager.save_config(config)
     cli_utils.print_success(f"Vector Store Path: [bold green]{config['vector_store_path']}[/bold green]")
 
     cli_utils.print_success("\n✅ Setup complete! Your preferences have been saved.")
+    cli_utils.print_info("[bold cyan]📌 Powered by: MD Wasiful Kabir[/bold cyan]")
+    cli_utils.print_info("[bold green]🛠️ Crafted with dedication and love.[/bold green]")
+    cli_utils.print_info("[bold yellow]🚀 ONE STEP AHEAD OF EVERYONE[/bold yellow]")
+
     return config
 
 

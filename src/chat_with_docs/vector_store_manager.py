@@ -1,7 +1,7 @@
 import os 
 
 
-import cli_utils
+from chat_with_docs import cli_utils
 
 
 from typing import Any,List

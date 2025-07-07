@@ -4,8 +4,8 @@ import requests
 from typing import Any
 from pydantic import SecretStr
 
-import cli_utils
-import llm_manager
+from chat_with_docs import cli_utils
+from chat_with_docs import llm_manager
 
 from langchain_ollama import OllamaEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings

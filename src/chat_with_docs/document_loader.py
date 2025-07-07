@@ -1,6 +1,6 @@
 import os
 import pytesseract
-import cli_utils
+from chat_with_docs import cli_utils
 
 from typing import List
 from langchain.schema.document import Document

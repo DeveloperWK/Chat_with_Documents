@@ -13,8 +13,8 @@ from rich.text import Text
 from rich.align import Align
 from rich.progress import Progress,SpinnerColumn,TextColumn
 
-import cli_utils
-import vector_store_manager
+from chat_with_docs import cli_utils
+from chat_with_docs import vector_store_manager
 
 
 

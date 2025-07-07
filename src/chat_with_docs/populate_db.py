@@ -8,8 +8,8 @@ from langchain.schema.document import Document
 from langchain_chroma import Chroma
 from rich.progress import Progress,SpinnerColumn,TextColumn,BarColumn,TimeRemainingColumn,TimeElapsedColumn
 
-import cli_utils
-import document_loader
+from chat_with_docs import cli_utils
+from chat_with_docs import document_loader
 
 
 

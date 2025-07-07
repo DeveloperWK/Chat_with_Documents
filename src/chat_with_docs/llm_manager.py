@@ -5,7 +5,7 @@ import sys
 from typing import Any
 from pydantic import SecretStr
 
-import cli_utils
+from chat_with_docs import cli_utils
 
 
 from langchain_ollama import OllamaLLM
