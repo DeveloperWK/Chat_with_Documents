@@ -25,11 +25,10 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages]
-# This tells setuptools to find packages in the 'chat_with_docs' directory
-find = {where = ["chat_with_docs"]}
+# This tells setuptools to find packages in the 'src' directory
+find = {where = ["src"]}
 
 [project.scripts]
 # Define your main entry point for the CLI tool
 # The format is "command_name = package_name.module_name:function_name"
-chat-with-docs = "chat_with_docs.main:main"
-
+chat-with-docs = "src.main:main" # Updated to point to src.main
