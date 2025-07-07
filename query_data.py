@@ -1,15 +1,23 @@
-import argparse
+import os
+import sys
+from typing import Any
+
+
 from langchain_chroma import Chroma
 from langchain.prompts import ChatPromptTemplate
-from langchain_ollama import OllamaLLM
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.prompt import Prompt 
 from rich.panel import Panel
-from get_embedding_func import get_embedding_function
+from rich.text import Text
+from rich.align import Align
+from rich.progress import Progress,SpinnerColumn,TextColumn
+
+import cli_utils
+import vector_store_manager
 
 
-CHROMA_PATH = "chroma"
+
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
 
@@ -19,66 +27,92 @@ Answer the question based only on the following context:
 
 Answer the question based on the above context: {question}
 """
-console = Console()
+
+
+
+_console=Console()
+
+
 def print_intro():
-   console.print("[bold cyan]🔍 RAG Query Interface using Chroma + Ollama[/bold cyan]")
-   console.print(Panel.fit(
-    "[bold green]📝 You can either:[/bold green]\n"
-    "1. Pass your question as a CLI argument:\n   [italic]python script.py 'Your question'[/italic]\n"
-    "2. Or enter interactively below.\n\n"
-    "[yellow]💡 Type 'q' and hit Enter to exit interactive mode.[/yellow]",
-    title="Instructions",
-    border_style="bright_blue"
-))
+    instructions = Text.from_markup(
+        "\n[bold green]📝 You can either:[/bold green]\n"
+        "1. Pass your question as a CLI argument:\n"
+        "   [italic]python main.py query 'Your question'[/italic]\n"
+        "2. Or enter interactively below.\n\n"
+        "[yellow]💡 Type 'q' and hit Enter to exit interactive mode.[/yellow]\n"
+        "[yellow]💡 Type 'clear' to clear the screen.[/yellow]"
+    )
 
-def main():
+    panel = Panel.fit(
+        Align.left(instructions),
+        title="[bold cyan]🔍 RAG Query Interface[/bold cyan]",
+        border_style="bright_blue",
+        padding=(1, 4)
+    )
+
+    _console.print(panel)
+
+
+
+def main(config:dict,llm_model:Any,embedding_func:Any,query_text:str  | None =None):
     print_intro()
-
-    parser = argparse.ArgumentParser(description="Query a RAG pipeline using a local vector DB and Ollama model.")
-    parser.add_argument("query_text", type=str, nargs="?", help="The query text to search and answer.")
-    args = parser.parse_args()
-
-    # If query provided via CLI
-    if args.query_text:
-        query_rag(args.query_text)
+    try:
+        db = vector_store_manager.get_vector_store(config,embedding_func)
+    except Exception as e:
+        cli_utils.print_error(f"Failed to initialize vector store: {e}")
+        sys.exit(1)
+    if query_text:
+        query_rag(query_text,db,llm_model)
         return
-
-    # Else enter interactive mode
     while True:
         try:
-            query_text = Prompt.ask("🔍 Enter your query (or 'q' to quit)").strip()
-        except (KeyboardInterrupt, EOFError):
-            print("\n👋 Exiting.")
+            query_input=Prompt.ask("🔍 Enter your query (or 'q' to quit, 'clear' to clear screen)").strip()
+        except(KeyboardInterrupt,EOFError):
+            cli_utils.print_info("\n👋 Exiting.")
             break
-
-        if query_text.lower() == "q":
-            print("👋 Exiting.")
+        if query_input.lower()=="q":
+            cli_utils.print_info("\n👋 Exiting.")
             break
-        elif query_text:
-            query_rag(query_text)
+        elif query_input.lower()=="clear":
+            os.system('cls' if os.name=="nt" else "clear")
+            print_intro()
+        elif query_input:
+             query_rag(query_input, db, llm_model)
 
-def query_rag(query_text: str) -> str:
-    embedding_func = get_embedding_function()
-    db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_func)
-    results = db.similarity_search_with_score(query_text, k=5)
-    context_chunks = [doc.page_content for doc, _ in results]
-    context_text = "\n\n---\n\n".join(context_chunks)
 
-    prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
+def query_rag(query_text:str,db:Chroma,llm_model:Any):
+    cli_utils.print_info(f"Searching for relevant documents for: '{query_text}'")
+    results = db.similarity_search_with_score(query_text, k=5) # k=5 for top 5 relevant chunks
+    if not results:
+        cli_utils.print_warning("No relevant documents found in the database for your query.")
+        return
+    context_chunk=[doc.page_content for doc,_ in results]
+    context_text="\n\n---\n\n".join(context_chunk)
+    prompt_template=ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query_text)
+    cli_utils.print_info("Generating response with LLM...")
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=cli_utils.console,
+        transient=True # Spinner disappears after completion
+    ) as progress:
+        task=progress.add_task("[cyan]Thinking...", total=None)
+        try:
+            response=llm_model.invoke(prompt)
+            progress.stop()
+            response_text=response.content if hasattr(response,"content") else str(response)
+        except Exception as e :
+            progress.stop()
+            cli_utils.print_error(f"Error invoking LLM: {e}")
+            return
+    sources=[doc.metadata.get("id","unknown") for doc,_ in results]
+    cli_utils.console.print("\n[bold magenta]🧠 Response:[/bold magenta]")
+    cli_utils.console.print(Markdown(response_text))
 
-    model = OllamaLLM(model="mistral")
-    response = model.invoke(prompt)
-
-    sources = [doc.metadata.get("id", "unknown") for doc, _ in results]
-    console.print("\n[bold magenta]🧠 Response:[/bold magenta]")
-    console.print(Markdown(response))  # for pretty formatting
-
-    console.print("\n[bold yellow]📚 Sources:[/bold yellow]", style="bold yellow")
-    console.print(sources)
+    cli_utils.console.print("\n[bold yellow]📚 Sources:[/bold yellow]", style="bold yellow")
+    for source_id in sorted(list(set(sources))):
+        cli_utils.console.print(f"  - {source_id}")
 
 
-    return response
 
-if __name__ == "__main__":
-    main()

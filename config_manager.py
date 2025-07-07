@@ -8,16 +8,18 @@ from rich.text import Text
 _console=Console()
 
 
-DEFAULT_CONFIG={
-    "preferred_ai_service":"ollama",
-    "ollama_chat_model":"mistral",
-    "ollama_embedding_model": "mxbai-embed-large",
-    "gemini_chat_model": "gemini-pro", 
-    "openai_chat_model": "gpt-3.5-turbo", 
-    "vector_store_path": "chroma",   
+DEFAULT_CONFIG = {
+    "preferred_ai_service": "ollama",  # Default AI service: "ollama", "gemini", "openai"
+    "ollama_chat_model": "mistral",    # Default Ollama chat model
+    "ollama_embedding_model": "mxbai-embed-large", # Default Ollama embedding model
+    "gemini_chat_model": "gemini-pro", # Default Gemini chat model
+    "gemini_embedding_model": "gemini-embedding-001", # Default Gemini embedding model
+    "openai_chat_model": "gpt-3.5-turbo", # Default OpenAI chat model
+    "openai_embedding_model": "text-embedding-ada-002", # Default OpenAI embedding model
+    "vector_store_path": "chroma",     # Default path for the Chroma vector store
+    "gemini_api_key": None,            # Placeholder for Gemini API key
+    "openai_api_key": None,            # Placeholder for OpenAI API key
 }
-
-
 def get_config_file_path()->str:
     home_dir=os.path.expanduser("~")
     app_config_dir=os.path.join(home_dir,".chat_with_docs")
@@ -70,21 +72,13 @@ def get_setting(key:str,default=None):
     return config.get(key,default)
 
 
-
-
-def set_setting(key:str,value):
-    config = load_config()
-    config[key] = value
-    save_config(config)
-
-
 def is_configured(config:dict)->bool:
     required_settings = [
         "preferred_ai_service",
         "vector_store_path",
     ]
     for setting in required_settings:
-        if setting not in config or not config[setting]:
+        if setting not in config or config[setting] is None:
             return False
     service = config.get("preferred_ai_service")
     match service:
@@ -92,10 +86,10 @@ def is_configured(config:dict)->bool:
             if not config.get("ollama_chat_model") or not config.get("ollama_embedding_model"):
                 return False
         case "gemini":
-            if not config.get("gemini_chat_model"):
+            if not config.get("gemini_chat_model") or config.get("gemini_api_key") is None:
                 return False
         case "openai":
-            if not config.get("openai_chat_model"):
+            if not config.get("openai_chat_model")or config.get("openai_api_key") is None:
                 return False
     return True
 
