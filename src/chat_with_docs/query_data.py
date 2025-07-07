@@ -19,13 +19,23 @@ from chat_with_docs import vector_store_manager
 
 
 PROMPT_TEMPLATE = """
-Answer the question based only on the following context:
+You are a helpful and knowledgeable assistant.
 
+Use only the following context to answer the question. Do not use any prior knowledge or make assumptions.
+
+If the answer cannot be found in the context, say:
+"The answer is not available in the provided context."
+
+Context:
+========
 {context}
 
----
+Question:
+=========
+{question}
 
-Answer the question based on the above context: {question}
+Answer:
+=========
 """
 
 
@@ -37,7 +47,7 @@ def print_intro():
     instructions = Text.from_markup(
         "\n[bold green]📝 You can either:[/bold green]\n"
         "1. Pass your question as a CLI argument:\n"
-        "   [italic]python main.py query 'Your question'[/italic]\n"
+        "   [italic]chat-with-docs query 'Your question'[/italic]\n"
         "2. Or enter interactively below.\n\n"
         "[yellow]💡 Type 'q' and hit Enter to exit interactive mode.[/yellow]\n"
         "[yellow]💡 Type 'clear' to clear the screen.[/yellow]"
